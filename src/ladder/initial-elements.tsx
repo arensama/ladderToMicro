@@ -18,7 +18,7 @@ export const nodes: Node[] = [
   {
     id: "1",
     type: "Input",
-    data: { color: "#4FD1C5" },
+    data: {},
     position: { x: 250, y: 0 },
   },
   {

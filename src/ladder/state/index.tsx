@@ -31,7 +31,7 @@ export type RFState = {
   nodes: Node<NodeData>[];
   Rnodes: Node<NodeData>[];
   onNodesChange: OnNodesChange;
-
+  getNextNodeId: () => string;
   edges: Edge[];
   Redges: Edge[];
 
@@ -50,6 +50,16 @@ const useStore = create(
     },
     nodes: initialNodes,
     edges: initialEdges,
+    getNextNodeId: () => {
+      const nodes: Node[] = get().nodes;
+      return String(
+        Math.max(
+          ...nodes.map((node) =>
+            Number(node.id != "Phase" && node.id != "Null" ? node.id : "0")
+          )
+        ) + 1
+      );
+    },
     Rnodes: [],
     Redges: [],
     onNodesChange: (changes: NodeChange[]) => {

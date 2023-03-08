@@ -3,8 +3,12 @@ import { shallow } from "zustand/shallow";
 import useStore, { RFState } from "../state";
 
 const Navbar = () => {
-  const [setRun, onNodesChange] = useStore(
-    (state: RFState) => [state.setRun, state.onNodesChange],
+  const [setRun, onNodesChange, getNextNodeId] = useStore(
+    (state: RFState) => [
+      state.setRun,
+      state.onNodesChange,
+      state.getNextNodeId,
+    ],
     shallow
   );
   return (
@@ -29,9 +33,10 @@ const Navbar = () => {
           style={{
             padding: 10,
           }}
+          align="middle"
         >
           <Col>
-            <Row>
+            <Row gutter={[16, 16]}>
               <Col>
                 <Button
                   onClick={() =>
@@ -39,16 +44,35 @@ const Navbar = () => {
                       {
                         type: "add",
                         item: {
-                          id: "4",
-                          type: "Output",
-                          data: { state: false },
-                          position: { x: 450, y: 0 },
+                          id: getNextNodeId(),
+                          type: "Input",
+                          data: {},
+                          position: { x: 0, y: -100 },
                         },
                       },
                     ])
                   }
                 >
-                  +
+                  --[/ ]--
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  onClick={() =>
+                    onNodesChange([
+                      {
+                        type: "add",
+                        item: {
+                          id: getNextNodeId(),
+                          type: "Output",
+                          data: { state: false },
+                          position: { x: 0, y: -100 },
+                        },
+                      },
+                    ])
+                  }
+                >
+                  --( )--
                 </Button>
               </Col>
             </Row>
