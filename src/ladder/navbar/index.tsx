@@ -3,11 +3,13 @@ import { shallow } from "zustand/shallow";
 import useStore, { RFState } from "../state";
 
 const Navbar = () => {
-  const [setRun, onNodesChange, getNextNodeId] = useStore(
+  const [setRun, onNodesChange, getNextNodeId, setState, compile] = useStore(
     (state: RFState) => [
       state.setRun,
       state.onNodesChange,
       state.getNextNodeId,
+      state.setState,
+      state.compile,
     ],
     shallow
   );
@@ -82,6 +84,17 @@ const Navbar = () => {
               <Col span={24}>Run</Col>
               <Col span={24}>
                 <Switch onChange={(event) => setRun(event)} />
+              </Col>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Col span={24}>Compile</Col>
+              <Col span={24}>
+                <Switch
+                  checked={compile ? true : false}
+                  onChange={(event) => setState("compile", event)}
+                />
               </Col>
             </Row>
           </Col>

@@ -23,10 +23,13 @@ export type NodeData = {
   color: string;
   state: boolean;
   name: string;
+  pin: string;
 };
 
 export type RFState = {
   run: boolean;
+  compile: boolean;
+  setState: (key: string, value: boolean) => void;
   setRun: (value: boolean) => void;
   nodes: Node<NodeData>[];
   Rnodes: Node<NodeData>[];
@@ -34,7 +37,7 @@ export type RFState = {
   getNextNodeId: () => string;
   edges: Edge[];
   Redges: Edge[];
-
+  getPins: () => any;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   updateNodeData: (nodeId: string, key: string, value: any) => void;
@@ -43,6 +46,12 @@ export type RFState = {
 const useStore = create(
   subscribeWithSelector<RFState>((set, get) => ({
     run: false,
+    compile: false,
+    setState: (key: string, value: boolean) => {
+      set({
+        [key]: value,
+      });
+    },
     setRun: (value: boolean) => {
       set({
         run: value,
@@ -50,6 +59,20 @@ const useStore = create(
     },
     nodes: initialNodes,
     edges: initialEdges,
+    getPins: () => {
+      const nodes: Node[] = get().nodes;
+      let inputs = [];
+      let outputs = [];
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        if (node.type == "Input") inputs.push(node.data.pin);
+        if (node.type == "Output") outputs.push(node.data.pin);
+      }
+      return {
+        inputs,
+        outputs,
+      };
+    },
     getNextNodeId: () => {
       const nodes: Node[] = get().nodes;
       return String(
@@ -75,7 +98,13 @@ const useStore = create(
     },
     onConnect: (connection: Connection) => {
       set({
-        edges: addEdge(connection, get().edges),
+        edges: addEdge(
+          {
+            ...connection,
+            type: "step",
+          },
+          get().edges
+        ),
       });
     },
     updateNodeData: (nodeId: string, key: string, value: any) => {

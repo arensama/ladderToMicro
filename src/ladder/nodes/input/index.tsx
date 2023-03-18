@@ -5,36 +5,55 @@ import { shallow } from "zustand/shallow";
 import useStore, { NodeData } from "../../state";
 const { Title, Text } = Typography;
 
-function InputNode({ id, data: { name } }: NodeProps<NodeData>) {
+function InputNode({ id, data: { name, pin } }: NodeProps<NodeData>) {
   const [run, nodes, updateNodeData] = useStore(
     (state) => [state.run, state.nodes, state.updateNodeData],
     shallow
   );
-  const [isChanging, setIsChanging] = useState(false);
+  const [isChanging, setIsChanging] = useState("");
   return (
     <div
       style={{
-        backgroundColor: "#4FD1C5",
-        borderRadius: 10,
-        padding: 8,
-        width: 150,
+        // backgroundColor: "#4FD1C5",
+        width: 50,
+        paddingBottom: 20,
       }}
     >
       <Handle type="target" position={Position.Left} />
       <Row gutter={[4, 4]}>
         <Col span={24}>
-          {isChanging && !run ? (
+          {isChanging == "pin" && !run ? (
+            <Input
+              defaultValue={pin}
+              placeholder="Pin"
+              size="small"
+              onBlur={(event) => {
+                updateNodeData(id, "pin", event.target.value);
+                setIsChanging("");
+              }}
+            />
+          ) : (
+            <Text
+              onDoubleClick={() => setIsChanging("pin")}
+              style={{ fontSize: 8 }}
+            >
+              {pin ?? "untitled"}
+            </Text>
+          )}
+        </Col>
+        <Col span={24}>
+          {isChanging == "name" && !run ? (
             <Input
               defaultValue={name}
               placeholder="Name"
               size="small"
               onBlur={(event) => {
                 updateNodeData(id, "name", event.target.value);
-                setIsChanging(false);
+                setIsChanging("");
               }}
             />
           ) : (
-            <Text onDoubleClick={() => setIsChanging(true)}>
+            <Text onDoubleClick={() => setIsChanging("name")}>
               {name ?? "untitled"}
             </Text>
           )}
