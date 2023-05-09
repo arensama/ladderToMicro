@@ -5,11 +5,15 @@ import { shallow } from "zustand/shallow";
 import useStore from "../ladder/state";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-
+interface IBFS {
+  stm32: string;
+  logic: string;
+}
 const Ladder2Logic = () => {
-  const [logicalCode, setLogicalCode] = useState("");
+  const [locialCode, setLogicalCode] = useState("");
+  const [stm32Code, setstm32Code] = useState("");
   let mark: string[] = [];
-  console.log("mark", mark);
+  // console.log("mark", mark);
   const [nodes, edges, compile, setState, getPins] = useStore(
     (state) => [
       state.nodes,
@@ -22,8 +26,9 @@ const Ladder2Logic = () => {
   );
 
   const bfs = async (node?: Node) => {
-    return new Promise(async (resolve, reject) => {
-      let result = `${""}`;
+    return new Promise<IBFS>(async (resolve, reject) => {
+      let stm32 = `${""}`;
+      let logic = `${""}`;
       const sources: (Node | any)[] = [];
       for (let i = 0; i < edges.length; i++) {
         const edge = edges[i];
@@ -32,7 +37,8 @@ const Ladder2Logic = () => {
       }
       for (let i = 0; i < sources.length; i++) {
         const source = sources[i];
-        result += `${i != 0 ? " || " : ""}${await bfs(source)}`;
+        stm32 += `${i != 0 ? " || " : ""}${(await bfs(source)).stm32}`;
+        logic += `${i != 0 ? " || " : ""}${(await bfs(source)).logic}`;
       }
 
       if (node?.type == "Output") {
@@ -45,43 +51,59 @@ const Ladder2Logic = () => {
           mark.findIndex((i) => node.id)
         );
         if (!isMarked) {
-          setLogicalCode(
+          setstm32Code(
             (prev) =>
               prev +
-              `HAL_GPIO_WritePin (GPIOA, ${node?.data?.pin}, ${result});
-        `
+              `                  HAL_GPIO_WritePin (GPIOA, ${node?.data?.pin}, ${stm32});\n`
+          );
+          setLogicalCode(
+            (prev) =>
+              prev + `                    ${node?.data?.name}= ${logic};\n`
           );
           mark.push(node.id);
         }
       }
-      resolve(
-        node?.type == "Input"
-          ? `HAL_GPIO_ReadPin(GPIOA, ${node?.data?.pin})${
-              result != "" ? ` && (${result})` : ""
-            }`
-          : `${result}`
-      );
+      resolve({
+        stm32:
+          node?.type == "Input"
+            ? `!HAL_GPIO_ReadPin(GPIOA, ${node?.data?.pin})${
+                stm32 != "" ? ` && (${stm32})` : ""
+              }`
+            : `${stm32}`,
+        logic:
+          node?.type == "Input"
+            ? `${node?.data?.name} ${logic != "" ? ` && (${logic})` : ""}`
+            : `${logic}`,
+      });
     });
   };
   const handleCalc = async () => {
     mark = [];
+    setstm32Code("");
     setLogicalCode("");
     await bfs(nodes.find((i) => i.id == "Null"));
   };
 
   const outpins = () => {
-    let res = "";
-    getPins().outputs.map((pin: string, index: number) => {
-      res += `${index != 0 ? " | " : ""}${pin}`;
+    let stm32 = "";
+    let logic = "bool ";
+    getPins().outputs.map((data: any, index: number) => {
+      stm32 += `${index != 0 ? " | " : ""}${data.pin}`;
+      logic += `${index != 0 ? " , " : ""}${data.name}=false`;
     });
-    return res;
+    logic += ";";
+
+    return { stm32, logic };
   };
   const inpins = () => {
-    let res = "";
-    getPins().inputs.map((pin: string, index: number) => {
-      res += `${index != 0 ? " | " : ""}${pin}`;
+    let stm32 = "";
+    let logic = "bool ";
+    getPins().inputs.map((data: any, index: number) => {
+      stm32 += `${index != 0 ? " | " : ""}${data.pin}`;
+      logic += `${index != 0 ? " , " : ""}${data.name}=false`;
     });
-    return res;
+    logic += ";";
+    return { stm32, logic };
   };
   useEffect(() => {
     if (compile) handleCalc();
@@ -94,8 +116,28 @@ const Ladder2Logic = () => {
       onCancel={() => setState("compile", false)}
       width={"100%"}
     >
-      <SyntaxHighlighter language="cpp" style={materialDark}>
-        {`
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          LOGIC
+          <SyntaxHighlighter language="cpp" style={materialDark}>
+            {`
+              #include<bits/stdc++.h>
+              using namespace std;
+              int main(){
+                ${outpins().logic}
+                ${inpins().logic}
+                while (1){
+                  
+${locialCode}
+                }
+              }
+            `}
+          </SyntaxHighlighter>
+        </Col>
+        <Col span={24}>
+          STM32
+          <SyntaxHighlighter language="cpp" style={materialDark}>
+            {`
         #include "main.h"
         #include <string.h>
         #include <stdlib.h>
@@ -114,7 +156,7 @@ const Ladder2Logic = () => {
           MX_GPIO_Init();
            while (1)
             {
-              ${logicalCode}
+${stm32Code}
             }
         }
         void SystemClock_Config(void)
@@ -146,13 +188,13 @@ const Ladder2Logic = () => {
           GPIO_InitTypeDef GPIO_InitStruct = {0};
           __HAL_RCC_GPIOD_CLK_ENABLE();
           __HAL_RCC_GPIOA_CLK_ENABLE();
-          HAL_GPIO_WritePin(GPIOA, ${outpins()}, GPIO_PIN_RESET);
-          GPIO_InitStruct.Pin = ${inpins()};
+          HAL_GPIO_WritePin(GPIOA, ${outpins().stm32}, GPIO_PIN_RESET);
+          GPIO_InitStruct.Pin = ${inpins().stm32};
           GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
           GPIO_InitStruct.Pull = GPIO_PULLUP;
           HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
         
-          GPIO_InitStruct.Pin = ${outpins()};
+          GPIO_InitStruct.Pin = ${outpins().stm32};
           GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
           GPIO_InitStruct.Pull = GPIO_NOPULL;
           GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -174,7 +216,9 @@ const Ladder2Logic = () => {
         }
         #endif
 `}
-      </SyntaxHighlighter>
+          </SyntaxHighlighter>
+        </Col>
+      </Row>
     </Modal>
   );
 };

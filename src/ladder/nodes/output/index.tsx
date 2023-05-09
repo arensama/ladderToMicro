@@ -5,7 +5,11 @@ import { shallow } from "zustand/shallow";
 import useStore, { NodeData } from "../../state";
 const { Title, Text } = Typography;
 
-function OutputNode({ id, data: { name, state, pin } }: NodeProps<NodeData>) {
+function OutputNode({
+  id,
+  data: { name, state, pin },
+  isConnectable,
+}: NodeProps<NodeData>) {
   const [nodes, updateNodeData, run] = useStore(
     (state) => [state.nodes, state.updateNodeData, state.run],
     shallow
@@ -64,10 +68,20 @@ function OutputNode({ id, data: { name, state, pin } }: NodeProps<NodeData>) {
         <Col span={24} style={{ paddingBottom: 7 }}>
           <Text>--( )--</Text>
         </Col>
-        <Col span={24}>{state ? "on" : "off"}</Col>
+        <Col span={24}>
+          {state ? (
+            <span style={{ color: "green" }}>on</span>
+          ) : (
+            <span style={{ color: "red" }}>off</span>
+          )}
+        </Col>
       </Row>
 
-      <Handle type="source" position={Position.Right} />
+      <Handle
+        type="source"
+        position={Position.Right}
+        isConnectable={isConnectable}
+      />
     </div>
   );
 }

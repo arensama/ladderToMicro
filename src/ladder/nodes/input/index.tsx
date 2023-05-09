@@ -5,7 +5,11 @@ import { shallow } from "zustand/shallow";
 import useStore, { NodeData } from "../../state";
 const { Title, Text } = Typography;
 
-function InputNode({ id, data: { name, pin } }: NodeProps<NodeData>) {
+function InputNode({
+  id,
+  data: { name, pin },
+  isConnectable,
+}: NodeProps<NodeData>) {
   const [run, nodes, updateNodeData] = useStore(
     (state) => [state.run, state.nodes, state.updateNodeData],
     shallow
@@ -64,13 +68,17 @@ function InputNode({ id, data: { name, pin } }: NodeProps<NodeData>) {
         <Col span={24}>
           <Switch
             onChange={(event) => {
-              // console.log("event", event, id);
+              console.log("event", event, id);
               updateNodeData(id, "state", event);
             }}
           />
         </Col>
       </Row>
-      <Handle type="source" position={Position.Right} />
+      <Handle
+        type="source"
+        position={Position.Right}
+        isConnectable={isConnectable}
+      />
     </div>
   );
 }

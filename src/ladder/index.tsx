@@ -46,8 +46,8 @@ function Flow() {
   // console.log(nodes);
   return (
     <ReactFlow
-      nodes={!run ? nodes : Rnodes}
-      edges={!run ? edges : Redges}
+      nodes={!0 ? nodes : Rnodes}
+      edges={!0 ? edges : Redges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
