@@ -5,14 +5,14 @@ export const nodes: Node[] = [
   {
     id: "Phase",
     type: "Phase",
-    data: { state: true },
+    data: { state: true , pin: "1", name: "1" },
     position: { x: 0, y: 0 },
     draggable: false,
   },
   {
     id: "Null",
     type: "Null",
-    data: {},
+    data: { pin: "0", name: "0" },
     position: { x: 1000, y: 0 },
   },
   {
