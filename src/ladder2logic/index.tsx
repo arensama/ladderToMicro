@@ -42,7 +42,7 @@ const Ladder2Logic = () => {
       const isMarked = mark.findIndex((i) => node.id == i) > -1;
       if (!isMarked &&(node.id!="Phase"&& node.id!="Null")) {
         console.log("log2",node.data.name,children)
-        let s = `              ${node.data.name} =( ${node.type=="Input"?`IN.${node.data.name.toUpperCase()} & `:``}`;
+        let s = `       ${node.data.name} =( ${node.type=="Input"?`IN.${node.data.name.toUpperCase()} & `:``}`;
         for (let i = 0; i < children.length; i++) {
           const child = children[i];
             s+= `${i!=0?` |`:``} ${child}`
