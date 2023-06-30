@@ -69,8 +69,8 @@ const Ladder2Logic = () => {
 
   const outpins = () => {
     let stm32 = "";
-    let logic = "bool ";
-    let structLogic = "bool ";
+    let logic = "int ";
+    let structLogic = "int ";
     let stm32InStruct = "";
     let outStruct = "";
     getPins().outputs.map((data: any, index: number) => {
@@ -88,8 +88,8 @@ const Ladder2Logic = () => {
   const inpins = () => {
     let stm32 = "";
     let stm32InStruct = "";
-    let logic = "bool ";
-    let structLogic = "bool ";
+    let logic = "int ";
+    let structLogic = "int ";
     getPins().inputs.map((data: any, index: number) => {
       stm32InStruct += `${index != 0 ? " , " : ""}HAL_GPIO_ReadPin(GPIOA,${data.pin})`;
       stm32 += `${index != 0 ? " | " : ""}${data.pin}`;
@@ -135,7 +135,7 @@ ${locialCode}
       GPIO_InitTypeDef GPIO_InitStruct = {0}; 
       GPIO_InitStruct.Pin = ${inpins().stm32}; 
       GPIO_InitStruct.Mode = GPIO_MODE_INPUT; 
-      GPIO_InitStruct.Pull = GPIO_PULLUP; 
+      GPIO_InitStruct.Pull = GPIO_PULLDOWN; 
       HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
        
       // Configure Pins as output 

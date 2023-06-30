@@ -18,37 +18,37 @@ export const nodes: Node[] = [
   {
     id: "1",
     type: "Input",
-    data: { pin: "GPIO_PIN_1", name: "in1" },
+    data: { pin: "GPIO_PIN_4", name: "in1" },
     position: { x: 50, y: 13 },
   },
   {
     id: "2",
     type: "Input",
-    data: { pin: "GPIO_PIN_2", name: "in2" },
+    data: { pin: "GPIO_PIN_6", name: "in2" },
     position: { x: 50, y: 100 },
   },
   {
     id: "3",
     type: "Input",
-    data: { pin: "GPIO_PIN_3", name: "in3" },
+    data: { pin: "GPIO_PIN_5", name: "in3" },
     position: { x: 250, y: 13 },
   },
   {
     id: "4",
     type: "Output",
-    data: { state: false, pin: "GPIO_PIN_4", name: "out1" },
+    data: { state: false, pin: "GPIO_PIN_1", name: "out1" },
     position: { x: 150, y: 13 },
   },
   {
     id: "5",
     type: "Output",
-    data: { state: false, pin: "GPIO_PIN_5", name: "out2" },
+    data: { state: false, pin: "GPIO_PIN_2", name: "out2" },
     position: { x: 450, y: 13 },
   },
   {
     id: "6",
     type: "Output",
-    data: { state: false, pin: "GPIO_PIN_6", name: "out3" },
+    data: { state: false, pin: "GPIO_PIN_3", name: "out3" },
     position: { x: 450, y: 100 },
   },
 ];
