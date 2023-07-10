@@ -51,6 +51,26 @@ export const nodes: Node[] = [
     data: { state: false, pin: "GPIO_PIN_3", name: "out3" },
     position: { x: 450, y: 100 },
   },
+  {
+    id: "7",
+    type: "Input",
+    data: {
+      pin: "GPIO_PIN_7",
+      name: "in4",
+    },
+    position: {
+      x: 220.33213870887823,
+      y: -100,
+    },
+    width: 50,
+    height: 115,
+    selected: false,
+    positionAbsolute: {
+      x: 220.33213870887823,
+      y: -100,
+    },
+    dragging: false,
+  },
 ];
 
 export const edges: Edge[] = [
@@ -107,6 +127,24 @@ export const edges: Edge[] = [
     source: "5",
     target: "Null",
     type: "step",
+  },
+  {
+    source: "Phase",
+    sourceHandle: null,
+    target: "7",
+    targetHandle: null,
+    type: "step",
+    id: "reactflow__edge-Phase-7",
+    selected: false,
+  },
+  {
+    source: "7",
+    sourceHandle: null,
+    target: "5",
+    targetHandle: null,
+    type: "step",
+    id: "reactflow__edge-7-5",
+    selected: false,
   },
 ];
 

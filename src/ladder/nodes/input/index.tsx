@@ -68,7 +68,6 @@ function InputNode({
         <Col span={24}>
           <Switch
             onChange={(event) => {
-              console.log("event", event, id);
               updateNodeData(id, "state", event);
             }}
           />

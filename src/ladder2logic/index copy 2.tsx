@@ -5,19 +5,15 @@ import { shallow } from "zustand/shallow";
 import useStore from "../ladder/state";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useLogic } from "./logic";
 
 const Ladder2Logic = () => {
-  const [locialCode, setLogicalCode] = useState<{
-    result: string;
-    newNodes: string[];
-  }>({
-    result: "",
-    newNodes: [],
-  });
+  const [locialCode, setLogicalCode] = useState("");
   const [finalStruct, setFinalStruct] = useState("");
   const [stm32Code, setstm32Code] = useState("");
-  const { handle } = useLogic();
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+  let mark: string[] = [];
+  // console.log("mark", mark);
   const [BeforeNodes, BeforeEdges, compile, setState, getPins] = useStore(
     (state) => [
       state.nodes,
@@ -28,19 +24,51 @@ const Ladder2Logic = () => {
     ],
     shallow
   );
+  useEffect(() => {}, [BeforeEdges, BeforeNodes]);
+  const bfs = async (node: Node) => {
+    return new Promise<string>(async (resolve, reject) => {
+      let logic = `${""}`;
+      const sources: (Node | any)[] = [];
+      for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        if (edge.target == node?.id)
+          sources.push(nodes?.find((i) => i.id == edge.source) ?? {});
+      }
+      let children: string[] = [];
+      for (let i = 0; i < sources.length; i++) {
+        const source = sources[i];
+        logic += `${i != 0 ? " | " : ""}${await bfs(source)}`;
 
+        children.push(source.data.name);
+      }
+      const isMarked = mark.findIndex((i) => node.id == i) > -1;
+      if (!isMarked && node.id != "Phase" && node.id != "Null") {
+        let s = `       ${node.data.name} =( ${
+          node.type == "Input" ? `IN.${node.data.name.toUpperCase()} & ` : ``
+        }`;
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i];
+          s += `${i != 0 ? ` |` : ``} ${child}`;
+        }
+        s += ");\n";
+        mark.push(node.id);
+        setLogicalCode((prev) => prev + s);
+      }
+      resolve(
+        node?.type == "Input"
+          ? `${node?.data?.name} ${logic != "" ? ` & ( ${logic})` : ""}`
+          : `${logic}`
+      );
+    });
+  };
+  const modifyDiagramData = () => {};
   const handleCalc = async () => {
+    mark = [];
     setstm32Code("");
-    setLogicalCode({
-      result: "",
-      newNodes: [],
-    });
+    setLogicalCode("");
     setFinalStruct("");
-    let res = await handle(BeforeNodes, BeforeEdges);
-    setLogicalCode({
-      result: res?.result ?? "",
-      newNodes: res?.newNodes ?? [],
-    });
+    // @ts-ignore
+    await bfs(nodes.find((i) => i.id == "Null"));
   };
 
   const outpins = () => {
@@ -76,13 +104,6 @@ const Ladder2Logic = () => {
       logic += `${index != 0 ? " , " : ""}${data.name}=0`;
       structLogic += `${index != 0 ? " , " : ""}${data.name.toUpperCase()}`;
     });
-    logic += ";\n       ";
-    logic += "int ";
-    const newNodes = locialCode.newNodes;
-    for (let i = 0; i < newNodes.length; i++) {
-      const newNode = newNodes[i];
-      logic += `${i != 0 ? " , " : ""}${newNode}=0`;
-    }
     logic += ";";
     structLogic += ";";
     return { stm32, logic, structLogic, stm32InStruct };
@@ -91,7 +112,7 @@ const Ladder2Logic = () => {
     if (compile) handleCalc();
   }, [compile]);
   useEffect(() => {
-    if (locialCode?.result && locialCode?.result != "")
+    if (locialCode)
       setFinalStruct(`
     struct inputs {
        ${inpins().structLogic}
@@ -102,7 +123,7 @@ const Ladder2Logic = () => {
     struct outputs logic(struct inputs IN) {
        ${inpins().logic}
        ${outpins().logic}
-${locialCode?.result}
+${locialCode}
        struct outputs OUT ={${outpins().outStruct}};
        return OUT;
     }`);
@@ -141,8 +162,7 @@ ${outpins().stm32InStruct}
     }
 
     `);
-  }, [finalStruct, handleCalc]);
-
+  }, [finalStruct]);
   return (
     <Modal
       open={compile}

@@ -78,12 +78,10 @@ const Ladder2Logic = () => {
     });
   };
   const handleCalc = async () => {
-    console.log('begin-----------------------')
     mark = [];
     setstm32Code("");
     setLogicalCode("");
     await bfs(nodes.find((i) => i.id == "Null"));
-    
   };
 
   const outpins = () => {
