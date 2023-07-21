@@ -1,6 +1,6 @@
 import React from "react";
 import { Handle, NodeProps, Position } from "reactflow";
-import useStore, { NodeData } from "../../state";
+import useStoreDigram, { NodeData } from "../../../storage/useStoreDigram";
 
 function NullNode({ id, data }: NodeProps<NodeData>) {
   return (

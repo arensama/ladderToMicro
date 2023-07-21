@@ -16,7 +16,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import {
   nodes as initialNodes,
   edges as initialEdges,
-} from "../initial-elements";
+} from "../ladder/initial-elements";
 import { shallow } from "zustand/shallow";
 
 export type NodeData = {
@@ -29,8 +29,7 @@ export type NodeData = {
 export type RFState = {
   run: boolean;
   thingsToDoAfterRun: boolean;
-  compile: boolean;
-  setState: (key: string, value: boolean) => void;
+  setState: (key: string, value: any) => void;
   setRun: (value: boolean) => void;
   reRun: boolean;
   nodes: Node<NodeData>[];
@@ -47,12 +46,11 @@ export type RFState = {
   updateNodeData: (nodeId: string, key: string, value: any) => void;
 };
 
-const useStore = create(
+const useStoreDigram = create(
   subscribeWithSelector<RFState>((set, get) => ({
     run: false,
     thingsToDoAfterRun: false,
-    compile: false,
-    setState: (key: string, value: boolean) => {
+    setState: (key: string, value: any) => {
       set({
         [key]: value,
       });
@@ -71,8 +69,8 @@ const useStore = create(
       let outputs = [];
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        if (node.type == "Input") inputs.push(node.data);
-        if (node.type == "Output") outputs.push(node.data);
+        if (node.type === "Input") inputs.push(node.data);
+        if (node.type === "Output") outputs.push(node.data);
       }
       return {
         inputs,
@@ -84,7 +82,7 @@ const useStore = create(
       return String(
         Math.max(
           ...nodes.map((node) =>
-            Number(node.id != "Phase" && node.id != "Null" ? node.id : "0")
+            Number(node.id !== "Phase" && node.id !== "Null" ? node.id : "0")
           )
         ) + 1
       );
@@ -141,4 +139,4 @@ const useStore = create(
 //     equalityFn: shallow,
 //   }
 // );
-export default useStore;
+export default useStoreDigram;

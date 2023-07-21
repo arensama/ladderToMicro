@@ -5,12 +5,11 @@ import { shallow } from "zustand/shallow";
 import "reactflow/dist/style.css";
 
 import InputNode from "./nodes/input";
-import useStore, { RFState } from "./state";
+import useStoreDigram, { RFState } from "../storage/useStoreDigram";
 import PhaseNode from "./nodes/phase";
 import NullNode from "./nodes/null";
 import OutputNode from "./nodes/output";
 import { Col, Row, Switch } from "antd";
-import Navbar from "./navbar";
 
 const nodeTypes: NodeTypes = {
   Input: InputNode,
@@ -42,7 +41,7 @@ function Flow() {
     onNodesChange,
     onEdgesChange,
     onConnect,
-  } = useStore(selector, shallow);
+  } = useStoreDigram(selector, shallow);
   // console.log(nodes);
   return (
     <ReactFlow
@@ -54,7 +53,6 @@ function Flow() {
       nodeTypes={nodeTypes}
       fitView
     >
-      <Navbar />
       <MiniMap
         nodeStrokeColor={(n) => {
           if (n.style?.background) return String(n.style.background);

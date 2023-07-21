@@ -6,14 +6,19 @@ export interface IGraph extends Node {
 export interface IExtendedGraph extends Node {
   sources: string[];
 }
-export const useLogic = () => {
+
+export interface IJson2SemiLogicResult {
+  result: string;
+  newNodes: string[];
+}
+export const useJson2SemiLogic = () => {
   let mark: Map<string, string> = new Map();
   const matrix2graph = (nodes: Node[], edges: Edge[]): IGraph[] => {
     let result: IGraph[] = [];
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
       let sources = edges
-        .filter((i) => i.target == node.id)
+        .filter((i) => i.target === node.id)
         .map((item) => item.source);
       result.push({ ...node, sources });
     }
@@ -45,7 +50,7 @@ export const useLogic = () => {
         sources: [],
       });
       if (previouslyAssigned) {
-        let newSources = [];
+        // let newSources = [];
         for (let i = 0; i < sources.length; i++) {
           const source = sources[i];
           reverseGraph.set(source, previouslyAssigned);
@@ -70,7 +75,7 @@ export const useLogic = () => {
             ...prev,
             sources: [`edge_${node.id}`],
           });
-        if (node.id != "Null" && node.id != "Phase")
+        if (node.id !== "Null" && node.id !== "Phase")
           newNodes.push(`edge_${node.id}`);
         result.set(`edge_${node.id}`, {
           id: `edge_${node.id}`,
@@ -95,37 +100,40 @@ export const useLogic = () => {
         const source = sources[i];
         const newNode = graph.get(source);
         if (newNode)
-          logic += `${i != 0 ? " | " : ""}${await bfs(newNode, graph)}`;
+          logic += `${i !== 0 ? " | " : ""}${await bfs(newNode, graph)}`;
       }
       if (!isMarked) {
         if (
-          node.id != "Phase" &&
-          node.id != "edge_Phase" &&
-          node.id != "Null" &&
-          node.id != "edge_Null"
+          node.id !== "Phase" &&
+          node.id !== "edge_Phase" &&
+          node.id !== "Null" &&
+          node.id !== "edge_Null"
         ) {
-          let s = `       ${node?.data?.name} =( ${
-            node.type == "Input"
+          let s = `         ${node?.data?.name}=(${
+            node.type === "Input"
               ? `IN.${node?.data?.name.toUpperCase()} & `
               : ``
           }`;
           for (let i = 0; i < sources.length; i++) {
             const source = sources[i];
             let newNode = graph.get(source);
-            s += `${i != 0 ? ` |` : ``} ${newNode?.data?.name}`;
+            s += `${i !== 0 ? ` |` : ``}${newNode?.data?.name}`;
           }
           s += ");\n";
           mark.set(node.id, s);
         }
       }
       resolve(
-        node?.type == "Input"
-          ? `${node?.data?.name} ${logic != "" ? ` & (${logic})` : ""}`
+        node?.type === "Input"
+          ? `${node?.data?.name} ${logic !== "" ? ` & (${logic})` : ""}`
           : `${logic}`
       );
     });
   };
-  const handle = async (nodes: Node[], edges: Edge[]) => {
+  const json2semiLogic = async (
+    nodes: Node[],
+    edges: Edge[]
+  ): Promise<IJson2SemiLogicResult> => {
     mark = new Map();
     let graphBeforeExtention = matrix2graph(nodes, edges);
     let { result: graph, newNodes } = graphExtender(graphBeforeExtention);
@@ -137,9 +145,9 @@ export const useLogic = () => {
         res += value;
       });
       return { result: res ?? "", newNodes };
-    }
+    } else return { result: "", newNodes: [] };
   };
   return {
-    handle,
+    json2semiLogic,
   };
 };

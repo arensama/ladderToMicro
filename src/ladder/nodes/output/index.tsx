@@ -2,7 +2,7 @@ import { Col, Input, Row, Typography } from "antd";
 import React, { useState } from "react";
 import { Handle, NodeProps, Position } from "reactflow";
 import { shallow } from "zustand/shallow";
-import useStore, { NodeData } from "../../state";
+import useStoreDigram, { NodeData } from "../../../storage/useStoreDigram";
 const { Title, Text } = Typography;
 
 function OutputNode({
@@ -10,7 +10,7 @@ function OutputNode({
   data: { name, state, pin },
   isConnectable,
 }: NodeProps<NodeData>) {
-  const [nodes, updateNodeData, run] = useStore(
+  const [nodes, updateNodeData, run] = useStoreDigram(
     (state) => [state.nodes, state.updateNodeData, state.run],
     shallow
   );
@@ -29,7 +29,7 @@ function OutputNode({
       <Handle type="target" position={Position.Left} />
       <Row gutter={[4, 4]}>
         <Col span={24}>
-          {isChanging == "pin" && !run ? (
+          {isChanging === "pin" && !run ? (
             <Input
               defaultValue={pin}
               placeholder="Pin"
@@ -49,7 +49,7 @@ function OutputNode({
           )}
         </Col>
         <Col span={24}>
-          {isChanging == "name" ? (
+          {isChanging === "name" ? (
             <Input
               defaultValue={name}
               placeholder="Name"

@@ -1,16 +1,20 @@
 import { Button, Card, Col, Row, Switch } from "antd";
 import { shallow } from "zustand/shallow";
-import useStore, { RFState } from "../state";
+import useStoreDigram, { RFState } from "../../storage/useStoreDigram";
+import useStoreGlobalData from "../../storage/useStoreGlobalData";
+import Saver from "../saver";
 
 const Navbar = () => {
-  const [setRun, onNodesChange, getNextNodeId, setState, compile] = useStore(
+  const [setRun, onNodesChange, getNextNodeId] = useStoreDigram(
     (state: RFState) => [
       state.setRun,
       state.onNodesChange,
       state.getNextNodeId,
-      state.setState,
-      state.compile,
     ],
+    shallow
+  );
+  const [modal, setGlobalData] = useStoreGlobalData(
+    (state) => [state.modal, state.setState],
     shallow
   );
   return (
@@ -79,24 +83,42 @@ const Navbar = () => {
               </Col>
             </Row>
           </Col>
-          <Col>
+          {/* <Col>
             <Row>
               <Col span={24}>Run</Col>
               <Col span={24}>
                 <Switch onChange={(event) => setRun(event)} />
               </Col>
             </Row>
-          </Col>
+          </Col> */}
           <Col>
             <Row>
               <Col span={24}>Compile</Col>
               <Col span={24}>
                 <Switch
-                  checked={compile ? true : false}
-                  onChange={(event) => setState("compile", event)}
+                  checked={modal === "compile"}
+                  onChange={(event) =>
+                    setGlobalData("modal", event === true ? "compile" : "")
+                  }
                 />
               </Col>
             </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Col span={24}>Debug</Col>
+              <Col span={24}>
+                <Switch
+                  checked={modal === "debug"}
+                  onChange={(event) =>
+                    setGlobalData("modal", event === true ? "debug" : "")
+                  }
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col>
+            <Saver />
           </Col>
         </Row>
       </Card>

@@ -228,7 +228,7 @@ const edges = [
 const matrix2graph = (nodes, edges) => {
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    let sources = edges.filter((i) => i.target == node.id);
+    let sources = edges.filter((i) => i.target === node.id);
     // console.log(node.id, sources);
     node.sources = sources.map((item) => item.source);
     nodes[i] = node;
@@ -288,24 +288,24 @@ const bfs = (node, graph) => {
     let sources = node.sources;
     for (let i = 0; i < sources.length; i++) {
       const source = sources[i];
-      logic += `${i != 0 ? " | " : ""}${await bfs(graph[source], graph)}`;
+      logic += `${i !== 0 ? " | " : ""}${await bfs(graph[source], graph)}`;
     }
-    const isMarked = mark.findIndex((i) => node.id == i) > -1;
-    if (!isMarked && node.id != "Phase" && node.id != "Null") {
+    const isMarked = mark.findIndex((i) => node.id === i) > -1;
+    if (!isMarked && node.id !== "Phase" && node.id !== "Null") {
       let s = `       ${node?.data?.name} =( ${
-        node.type == "Input" ? `IN.${node?.data?.name.toUpperCase()} & ` : ``
+        node.type === "Input" ? `IN.${node?.data?.name.toUpperCase()} & ` : ``
       }`;
       for (let i = 0; i < sources.length; i++) {
         const source = sources[i];
-        s += `${i != 0 ? ` |` : ``} ${source}`;
+        s += `${i !== 0 ? ` |` : ``} ${source}`;
       }
       s += ");\n";
       mark.push(node.id);
       logical += s;
     }
     resolve(
-      node?.type == "Input"
-        ? `${node?.data?.name} ${logic != "" ? ` & ( ${logic})` : ""}`
+      node?.type === "Input"
+        ? `${node?.data?.name} ${logic !== "" ? ` & ( ${logic})` : ""}`
         : `${logic}`
     );
   });

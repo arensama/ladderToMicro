@@ -5,7 +5,9 @@ import OverviewFlow from "./ladder";
 import "antd/dist/reset.css";
 import { ConfigProvider } from "antd";
 import { themeProvider } from "./themeProvider";
-import Ladder2Logic from "./ladder2logic";
+import Compiler from "./components/compiler";
+import Debugger from "./components/debuger";
+import Navbar from "./components/navbar";
 export default function App() {
   return (
     <ConfigProvider
@@ -15,17 +17,10 @@ export default function App() {
       theme={themeProvider}
     >
       <div className="App">
+        <Navbar />
         <OverviewFlow />
-        <div
-          style={{
-            position: "absolute",
-            zIndex: 10,
-            top: 200,
-            background: "red",
-          }}
-        >
-          <Ladder2Logic />
-        </div>
+        <Compiler />
+        <Debugger />
       </div>
     </ConfigProvider>
   );
