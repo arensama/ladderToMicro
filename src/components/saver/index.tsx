@@ -1,18 +1,19 @@
 import fs from "fs";
-import { useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { dialog } from "electron";
+// interface FolderSelectorProps {
+//   onFolderSelect: (folderPath: string) => void;
+// }
+// { onFolderSelect }: FolderSelectorProps
 const Saver = () => {
   //   fs.writeFileSync("hello.c", code);
-
-  const [file, setFile] = useState<File | null>(null);
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files && event.target.files[0];
-    setFile(selectedFile || null);
-  };
+  // console.log(
+  //   dialog.showOpenDialog({ properties: ["openFile", "multiSelections"] })
+  // );
 
   return (
     <div>
-      <input type="file" onChange={handleFileChange} />
-      {file && <p>Selected file: {file.name}</p>}
+      {/* <button onClick={handleSelectClick}>Select Folder</button> */}
     </div>
   );
 };
