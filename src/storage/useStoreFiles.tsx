@@ -1,16 +1,17 @@
 import { create } from "zustand";
-
 import { subscribeWithSelector } from "zustand/middleware";
 
 export type IStoreFiles = {
   main_c: string;
   logic_c: string;
   logic_h: string;
+  projectLocation: string;
 };
 type IStoreFilesP = {
   main_c?: string;
   logic_c?: string;
   logic_h?: string;
+  projectLocation?: string;
 };
 interface ISetState {
   key: keyof IStoreFiles;
@@ -25,6 +26,7 @@ const useStoreFiles = create(
     main_c: "",
     logic_c: "",
     logic_h: "",
+    projectLocation: "",
     setState: (keyVals: ISetState[]) => {
       let result: IStoreFilesP = {};
       for (let i = 0; i < keyVals.length; i++) {

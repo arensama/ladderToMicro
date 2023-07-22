@@ -8,20 +8,23 @@ import { themeProvider } from "./themeProvider";
 import Compiler from "./components/compiler";
 import Debugger from "./components/debuger";
 import Navbar from "./components/navbar";
+import { IoProvider } from "./providers/ioProvider";
 export default function App() {
   return (
-    <ConfigProvider
-      // direction="rtl"
-      // @ts-ignore
-      // locale={locale}
-      theme={themeProvider}
-    >
-      <div className="App">
-        <Navbar />
-        <OverviewFlow />
-        <Compiler />
-        <Debugger />
-      </div>
-    </ConfigProvider>
+    <IoProvider>
+      <ConfigProvider
+        // direction="rtl"
+        // @ts-ignore
+        // locale={locale}
+        theme={themeProvider}
+      >
+        <div className="App">
+          <Navbar />
+          <OverviewFlow />
+          <Compiler />
+          <Debugger />
+        </div>
+      </ConfigProvider>
+    </IoProvider>
   );
 }

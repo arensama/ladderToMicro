@@ -23,7 +23,7 @@ export const useSemiLogic2Cpp = () => {
     getPins().outputs.map((data: any, index: number) => {
       stm32InStruct += `          HAL_GPIO_WritePin(GPIOA, ${
         data.pin
-      }, o.${data.name.toUpperCase()});\n`;
+      }, RNoutputInstance.${data.name.toUpperCase()});\n`;
       stm32 += `${index !== 0 ? " | " : ""}${data.pin}`;
       logic += `${index !== 0 ? " , " : ""}${data.name}=0`;
       structLogic += `${index !== 0 ? " , " : ""}${data.name.toUpperCase()}`;
@@ -92,12 +92,12 @@ ${semiLogic?.result}
       struct RNoutputs {
          ${outpinsRES.structLogic}
       };
-      struct RNoutputs logic(struct inputs IN);
+      struct RNoutputs logic(struct RNinputs IN);
 
       #endif /* LOGIC_H */
       `;
       let globalDefinition = `
-      struct RNinputs RNinputsInstance={
+      struct RNinputs RNinputInstance={
          ${inpinsRES.instance}
       };
       struct RNoutputs RNoutputInstance={

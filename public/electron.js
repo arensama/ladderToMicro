@@ -3,13 +3,17 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
-const { dialog } = require("electron");
+const socketServer = require("./electronFiles/socket");
+
 let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     icon: "",
+    webPreferences: {
+      nodeIntegration: true,
+    },
   });
 
   mainWindow.loadURL(
@@ -18,13 +22,13 @@ function createWindow() {
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
   mainWindow.on("closed", () => (mainWindow = null));
-
-  console.log(
-    dialog.showOpenDialog({ properties: ["openDirectory", "multiSelections"] })
-  );
+  mainWindow.webContents.openDevTools();
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+  socketServer();
+});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
