@@ -15,17 +15,24 @@ const Compiler = () => {
     (state) => [state.logic_c, state.logic_h, state.main_c, state.setState],
     shallow
   );
-  const [modal, setGlobalData] = useStoreGlobalData(
-    (state) => [state.modal, state.setState],
+  const [compilerModal, setGlobalData] = useStoreGlobalData(
+    (state) => [state.compilerModal, state.setState],
     shallow
   );
   useEffect(() => {
-    if (modal === "compile") startProcess();
-  }, [modal]);
+    if (compilerModal) startProcess();
+  }, [compilerModal]);
   return (
     <Modal
-      open={modal === "compile"}
-      onCancel={() => setGlobalData("modal", "")}
+      open={compilerModal}
+      onCancel={() =>
+        setGlobalData([
+          {
+            key: "compilerModal",
+            value: false,
+          },
+        ])
+      }
       width={"100%"}
     >
       <Row gutter={[16, 16]}>

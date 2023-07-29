@@ -26,34 +26,44 @@ const saveToLocation = async (socketServer, data) => {
     }
   });
 };
-const openMapFile = async (socketServer, data) => {
-  const mapFilePath =
-    "/Users/aren/STM32CubeIDE/workspace_1.12.1/project1/Debug/project1.map";
-  const symbolName = "RNinputInstance";
-
-  fs.readFile(mapFilePath, "utf8", function (err, data) {
-    if (err) {
-      console.log(err);
-    } else {
-      const lines = data.split("\n");
-      let address = null;
-      for (let i = 0; i < lines.length; i++) {
-        const match = lines[i].match(
-          /^ +0x([0-9A-Fa-f]+) +(T|D|B) +(RNinputInstance)$/
-        );
-        if (match) {
-          address = parseInt(match[1], 16);
-          break;
-        }
-      }
-      if (address !== null) {
-        console.log(
-          `The address of ${symbolName} is 0x${address.toString(16)}`
-        );
+const findAddress = (symbolName) => {
+  return new Promise(async (resolve, reject) => {
+    const mapFilePath =
+      "/Users/aren/STM32CubeIDE/workspace_1.12.1/project1/Debug/project1.map";
+    fs.readFile(mapFilePath, "utf8", function (err, data) {
+      if (err) {
+        console.log(err);
       } else {
-        console.log(`Could not find the address of ${symbolName}`);
+        const lines = data.split("\n");
+        let address = null;
+        let match = false;
+        for (let i = 0; i < lines.length; i++) {
+          if (match) {
+            let array = lines[i].split(" ");
+            for (let j = 0; j < array.length; j++) {
+              const element = array[j];
+              if (element.includes("0x")) {
+                resolve(element);
+                break;
+              }
+            }
+            address = parseInt(match[1], 16);
+            break;
+          }
+          match = lines[i].includes(symbolName);
+        }
+        reject(`Could not find the address of ${symbolName}`);
       }
-    }
+    });
+  });
+};
+
+const openMapFile = async (socketServer, data) => {
+  const inputAdress = await findAddress("RNinputInstance");
+  const outputAdress = await findAddress("RNoutputInstance");
+  socketServer.emit("memoryLocations", {
+    inputAdress,
+    outputAdress,
   });
 };
 module.exports = {

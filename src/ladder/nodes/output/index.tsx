@@ -10,8 +10,8 @@ function OutputNode({
   data: { name, state, pin },
   isConnectable,
 }: NodeProps<NodeData>) {
-  const [nodes, updateNodeData, run] = useStoreDigram(
-    (state) => [state.nodes, state.updateNodeData, state.run],
+  const [nodes, updateNodeData, debugging] = useStoreDigram(
+    (state) => [state.nodes, state.updateNodeData, state.debugging],
     shallow
   );
   const [isChanging, setIsChanging] = useState("");
@@ -29,7 +29,7 @@ function OutputNode({
       <Handle type="target" position={Position.Left} />
       <Row gutter={[4, 4]}>
         <Col span={24}>
-          {isChanging === "pin" && !run ? (
+          {isChanging === "pin" && !debugging ? (
             <Input
               defaultValue={pin}
               placeholder="Pin"

@@ -2,19 +2,22 @@ import { Button, Card, Col, Row, Switch } from "antd";
 import { shallow } from "zustand/shallow";
 import useStoreDigram, { RFState } from "../../storage/useStoreDigram";
 import useStoreGlobalData from "../../storage/useStoreGlobalData";
-import Saver from "../saver";
+import SaveCCode from "../saveCCode";
+import ReadMapFile from "../readMapFile";
 
 const Navbar = () => {
-  const [setRun, onNodesChange, getNextNodeId] = useStoreDigram(
-    (state: RFState) => [
-      state.setRun,
-      state.onNodesChange,
-      state.getNextNodeId,
-    ],
-    shallow
-  );
-  const [modal, setGlobalData] = useStoreGlobalData(
-    (state) => [state.modal, state.setState],
+  const [debugging, setDebugging, onNodesChange, getNextNodeId] =
+    useStoreDigram(
+      (state: RFState) => [
+        state.debugging,
+        state.setDebugging,
+        state.onNodesChange,
+        state.getNextNodeId,
+      ],
+      shallow
+    );
+  const [compilerModal, mapModal, setGlobalData] = useStoreGlobalData(
+    (state) => [state.compilerModal, state.mapModal, state.setState],
     shallow
   );
   return (
@@ -83,42 +86,66 @@ const Navbar = () => {
               </Col>
             </Row>
           </Col>
-          {/* <Col>
-            <Row>
-              <Col span={24}>Run</Col>
-              <Col span={24}>
-                <Switch onChange={(event) => setRun(event)} />
-              </Col>
-            </Row>
-          </Col> */}
-          <Col>
-            <Row>
-              <Col span={24}>Compile</Col>
-              <Col span={24}>
-                <Switch
-                  checked={modal === "compile"}
-                  onChange={(event) =>
-                    setGlobalData("modal", event === true ? "compile" : "")
-                  }
-                />
-              </Col>
-            </Row>
-          </Col>
           <Col>
             <Row>
               <Col span={24}>Debug</Col>
               <Col span={24}>
                 <Switch
-                  checked={modal === "debug"}
-                  onChange={(event) =>
-                    setGlobalData("modal", event === true ? "debug" : "")
-                  }
+                  checked={debugging}
+                  onChange={(event) => setDebugging(event)}
                 />
               </Col>
             </Row>
           </Col>
           <Col>
-            <Saver />
+            <Row>
+              {/* <Col span={24}>Compile</Col> */}
+              <Col span={24}>
+                <Button
+                  onClick={() =>
+                    setGlobalData([
+                      {
+                        key: "compilerModal",
+                        value: true,
+                      },
+                    ])
+                  }
+                >
+                  Compile
+                </Button>
+                {/* <Switch
+                  checked={compilerModal}
+                  onChange={(event) =>
+                    setGlobalData([
+                      {
+                        key: "compilerModal",
+                        value: event,
+                      },
+                    ])
+                  }
+                /> */}
+              </Col>
+            </Row>
+          </Col>
+          {/* <Col>
+            <Row>
+              <Col span={24}>Debug</Col>
+              <Col span={24}>
+                <Switch
+                  checked={}
+                  onChange={
+                    (event) => {}
+                    // setGlobalData("modal", event === true ? "debug" : "")
+                  }
+                />
+              </Col>
+            </Row>
+          </Col> */}
+          <Col>
+            <SaveCCode />
+          </Col>
+          <Col>
+            <ReadMapFile />
           </Col>
         </Row>
       </Card>

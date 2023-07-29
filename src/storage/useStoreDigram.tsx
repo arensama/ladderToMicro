@@ -27,40 +27,39 @@ export type NodeData = {
 };
 
 export type RFState = {
-  run: boolean;
-  thingsToDoAfterRun: boolean;
-  setState: (key: string, value: any) => void;
-  setRun: (value: boolean) => void;
-  reRun: boolean;
   nodes: Node<NodeData>[];
-  Rnodes: Node<NodeData>[];
-  nodesRewrited: Node<NodeData>[];
-  onNodesChange: OnNodesChange;
-  getNextNodeId: () => string;
   edges: Edge[];
-  Redges: Edge[];
-  edgesRewrited: Edge[];
+  //  for seprating input outputs
   getPins: () => any;
+  // diagram utility
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   updateNodeData: (nodeId: string, key: string, value: any) => void;
+  getNextNodeId: () => string;
+  onNodesChange: OnNodesChange;
+  // for easy set
+  setState: (key: string, value: any) => void;
+  // debugger
+  debuggerNodes: Node<NodeData>[];
+  debuggerEdges: Edge[];
+
+  debugging: boolean;
+  setDebugging: (value: boolean) => void;
 };
 
 const useStoreDigram = create(
   subscribeWithSelector<RFState>((set, get) => ({
-    run: false,
-    thingsToDoAfterRun: false,
+    debugging: false,
     setState: (key: string, value: any) => {
       set({
         [key]: value,
       });
     },
-    setRun: (value: boolean) => {
+    setDebugging: (value: boolean) => {
       set({
-        run: value,
+        debugging: value,
       });
     },
-    reRun: false,
     nodes: initialNodes,
     edges: initialEdges,
     getPins: () => {
@@ -87,10 +86,9 @@ const useStoreDigram = create(
         ) + 1
       );
     },
-    Rnodes: [],
-    Redges: [],
-    nodesRewrited: [],
-    edgesRewrited: [],
+    debuggerNodes: [],
+    debuggerEdges: [],
+
     onNodesChange: (changes: NodeChange[]) => {
       // console.log("changes", changes);
       set({
@@ -121,7 +119,6 @@ const useStoreDigram = create(
           }
           return node;
         }),
-        reRun: true,
       });
     },
   }))
@@ -130,9 +127,8 @@ const useStoreDigram = create(
 // useStore.subscribe(
 //   (state) => [state.nodes,state.edges],
 //   (state) => {
-//     // console.log("reRun2", state);
 //     // useStore.setState((state) => ({
-//     //   Rnodes: state.nodes,
+//     //   debuggerNodes: state.nodes,
 //     // }));
 //   },
 //   {

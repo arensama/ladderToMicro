@@ -19,12 +19,12 @@ const nodeTypes: NodeTypes = {
 };
 
 const selector = (state: RFState) => ({
-  setRun: state.setRun,
-  run: state.run,
+  setDebugging: state.setDebugging,
+  debugging: state.debugging,
   nodes: state.nodes,
   edges: state.edges,
-  Rnodes: state.Rnodes,
-  Redges: state.Redges,
+  debuggerNodes: state.debuggerNodes,
+  debuggerEdges: state.debuggerEdges,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
@@ -32,12 +32,12 @@ const selector = (state: RFState) => ({
 
 function Flow() {
   const {
-    setRun,
-    run,
+    setDebugging,
+    debugging,
     nodes,
-    Rnodes,
+    debuggerNodes,
     edges,
-    Redges,
+    debuggerEdges,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -45,8 +45,8 @@ function Flow() {
   // console.log(nodes);
   return (
     <ReactFlow
-      nodes={!0 ? nodes : Rnodes}
-      edges={!0 ? edges : Redges}
+      nodes={!debugging ? nodes : debuggerNodes}
+      edges={!debugging ? edges : debuggerEdges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}

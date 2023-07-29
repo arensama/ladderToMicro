@@ -42,11 +42,5 @@ export const useSocket = () => {
         reject(error);
       }
     });
-  const save = (location: string, data: string) => {
-    emit("saveToLocation", {
-      location,
-      data,
-    });
-  };
-  return { save, IO, emit };
+  return { IO, emit };
 };
