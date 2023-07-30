@@ -5,7 +5,7 @@ import { shallow } from "zustand/shallow";
 import "reactflow/dist/style.css";
 
 import InputNode from "./nodes/input";
-import useStoreDigram, { RFState } from "../storage/useStoreDigram";
+import useStoreDiagram, { IStoreDiagram } from "../storage/useStoreDiagram";
 import PhaseNode from "./nodes/phase";
 import NullNode from "./nodes/null";
 import OutputNode from "./nodes/output";
@@ -18,7 +18,7 @@ const nodeTypes: NodeTypes = {
   Null: NullNode,
 };
 
-const selector = (state: RFState) => ({
+const selector = (state: IStoreDiagram) => ({
   setDebugging: state.setDebugging,
   debugging: state.debugging,
   nodes: state.nodes,
@@ -41,7 +41,7 @@ function Flow() {
     onNodesChange,
     onEdgesChange,
     onConnect,
-  } = useStoreDigram(selector, shallow);
+  } = useStoreDiagram(selector, shallow);
   // console.log(nodes);
   return (
     <ReactFlow

@@ -3,7 +3,6 @@ import { Col, Modal, Row } from "antd";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useSemiLogic2Cpp } from "../../hooks/useSemiLogic2Cpp";
-import useStoreDigram, { RFState } from "../../storage/useStoreDigram";
 import { shallow } from "zustand/shallow";
 import useStoreGlobalData from "../../storage/useStoreGlobalData";
 import { useEffect } from "react";

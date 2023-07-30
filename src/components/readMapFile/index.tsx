@@ -11,8 +11,8 @@ const ReadMapFile = () => {
     main_c,
     projectName,
     projectLocation,
-    inputAdress,
-    outputAdress,
+    inputAddress,
+    outputAddress,
     setStoreFiles,
   ] = useStoreFiles(
     (state) => [
@@ -21,8 +21,8 @@ const ReadMapFile = () => {
       state.main_c,
       state.projectName,
       state.projectLocation,
-      state.inputAdress,
-      state.outputAdress,
+      state.inputAddress,
+      state.outputAddress,
       state.setState,
     ],
     shallow
@@ -50,12 +50,12 @@ const ReadMapFile = () => {
     IO.on("memoryLocations", function (data) {
       setStoreFiles([
         {
-          key: "inputAdress",
-          value: data?.inputAdress,
+          key: "inputAddress",
+          value: data?.inputAddress,
         },
         {
-          key: "outputAdress",
-          value: data?.outputAdress,
+          key: "outputAddress",
+          value: data?.outputAddress,
         },
       ]);
     });
@@ -100,8 +100,8 @@ const ReadMapFile = () => {
         }
       >
         <Row>
-          <Col>{`input address : ${inputAdress}`}</Col>
-          <Col>{`output address : ${outputAdress}`}</Col>
+          <Col>{`input address : ${inputAddress}`}</Col>
+          <Col>{`output address : ${outputAddress}`}</Col>
         </Row>
       </Modal>
     </Row>

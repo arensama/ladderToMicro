@@ -2,15 +2,15 @@ import { Col, Input, Row, Switch, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { Handle, NodeProps, Position, useEdges } from "reactflow";
 import { shallow } from "zustand/shallow";
-import useStoreDigram, { NodeData } from "../../../storage/useStoreDigram";
+import useStoreDiagram, { NodeData } from "../../../storage/useStoreDiagram";
 const { Title, Text } = Typography;
 
 function InputNode({
   id,
-  data: { name, pin },
+  data: { name, pin, state },
   isConnectable,
 }: NodeProps<NodeData>) {
-  const [debugging, nodes, updateNodeData] = useStoreDigram(
+  const [debugging, nodes, updateNodeData] = useStoreDiagram(
     (state) => [state.debugging, state.nodes, state.updateNodeData],
     shallow
   );
@@ -67,9 +67,10 @@ function InputNode({
         </Col>
         <Col span={24}>
           <Switch
-            onChange={(event) => {
-              updateNodeData(id, "state", event);
-            }}
+            checked={state && debugging}
+            // onChange={(event) => {
+            //   updateNodeData(id, "state", event);
+            // }}
           />
         </Col>
       </Row>

@@ -7,8 +7,8 @@ export type IStoreFiles = {
   logic_h: string;
   projectLocation: string;
   projectName: string;
-  inputAdress: string;
-  outputAdress: string;
+  inputAddress: string;
+  outputAddress: string;
 };
 type IStoreFilesP = {
   main_c?: string;
@@ -16,8 +16,8 @@ type IStoreFilesP = {
   logic_h?: string;
   projectLocation?: string;
   projectName?: string;
-  inputAdress?: string;
-  outputAdress?: string;
+  inputAddress?: string;
+  outputAddress?: string;
 };
 interface ISetState {
   key: keyof IStoreFiles;
@@ -34,8 +34,8 @@ const useStoreFiles = create(
     logic_h: "",
     projectLocation: "",
     projectName: "project1",
-    inputAdress: "",
-    outputAdress: "",
+    inputAddress: "",
+    outputAddress: "",
     setState: (keyVals: ISetState[]) => {
       let result: IStoreFilesP = {};
       for (let i = 0; i < keyVals.length; i++) {

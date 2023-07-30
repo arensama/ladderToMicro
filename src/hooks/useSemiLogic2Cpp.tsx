@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { IJson2SemiLogicResult, useJson2SemiLogic } from "./useJson2SemiLogic";
-import useStoreDigram from "../storage/useStoreDigram";
+import useStoreDiagram from "../storage/useStoreDiagram";
 import { shallow } from "zustand/shallow";
 import useStoreFiles from "../storage/useStoreFiles";
 export const useSemiLogic2Cpp = () => {
   const { json2semiLogic } = useJson2SemiLogic();
-  const [BeforeNodes, BeforeEdges, getPins] = useStoreDigram(
+  const [BeforeNodes, BeforeEdges, getPins] = useStoreDiagram(
     (state) => [state.nodes, state.edges, state.getPins],
     shallow
   );

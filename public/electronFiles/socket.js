@@ -1,6 +1,11 @@
 const http = require("http");
 const io = require("socket.io");
-const { openlocation, saveToLocation, openMapFile } = require("./file");
+const {
+  openlocation,
+  saveToLocation,
+  openMapFile,
+  createMemoryGDB,
+} = require("./file");
 function socketServer() {
   const server = http.createServer();
   const socketServer = io(server, {
@@ -15,6 +20,9 @@ function socketServer() {
 
     socket.on("getLocation", function (data) {
       openlocation(socketServer);
+    });
+    socket.on("createMemoryGDB", function (data) {
+      createMemoryGDB(socketServer, data);
     });
     socket.on("saveToLocation", function (data) {
       saveToLocation(socketServer, data);

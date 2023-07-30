@@ -6,7 +6,6 @@ import "antd/dist/reset.css";
 import { ConfigProvider } from "antd";
 import { themeProvider } from "./themeProvider";
 import Compiler from "./components/compiler";
-import Debugger from "./components/debugger";
 import Navbar from "./components/navbar";
 import { IoProvider } from "./providers/ioProvider";
 export default function App() {
@@ -22,7 +21,7 @@ export default function App() {
           <Navbar />
           <OverviewFlow />
           <Compiler />
-          <Debugger />
+          {/* <Debugger /> */}
         </div>
       </ConfigProvider>
     </IoProvider>

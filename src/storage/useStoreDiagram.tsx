@@ -24,36 +24,67 @@ export type NodeData = {
   state: boolean;
   name: string;
   pin: string;
+  address?: string;
 };
 
-export type RFState = {
+export type IStoreDiagramF = {
   nodes: Node<NodeData>[];
   edges: Edge[];
-  //  for seprating input outputs
-  getPins: () => any;
   // diagram utility
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
-  updateNodeData: (nodeId: string, key: string, value: any) => void;
-  getNextNodeId: () => string;
   onNodesChange: OnNodesChange;
-  // for easy set
-  setState: (key: string, value: any) => void;
   // debugger
   debuggerNodes: Node<NodeData>[];
   debuggerEdges: Edge[];
-
   debugging: boolean;
-  setDebugging: (value: boolean) => void;
 };
 
-const useStoreDigram = create(
-  subscribeWithSelector<RFState>((set, get) => ({
+type IStoreDiagramP = {
+  nodes?: Node<NodeData>[];
+  edges?: Edge[];
+  // diagram utility
+  onEdgesChange?: OnEdgesChange;
+  onConnect?: OnConnect;
+  onNodesChange?: OnNodesChange;
+  // debugger
+  debuggerNodes?: Node<NodeData>[];
+  debuggerEdges?: Edge[];
+  debugging?: boolean;
+};
+export interface IStoreDiagram extends IStoreDiagramF {
+  getPins: () => any;
+  setState: (key: keyof IStoreDiagramF, value: any) => void;
+  updateNodeData: (nodeId: string, key: string, value: any) => void;
+  getNextNodeId: () => string;
+  setDebugging: (value: boolean) => void;
+  setMultiState: (
+    keyVals: {
+      key: keyof IStoreDiagramF;
+      value: any;
+    }[]
+  ) => void;
+}
+const useStoreDiagram = create(
+  subscribeWithSelector<IStoreDiagram>((set, get) => ({
     debugging: false,
-    setState: (key: string, value: any) => {
+    setState: (key: keyof IStoreDiagramF, value: any) => {
       set({
         [key]: value,
       });
+    },
+    setMultiState: (
+      keyVals: {
+        key: keyof IStoreDiagramF;
+        value: any;
+      }[]
+    ) => {
+      let result: IStoreDiagramP = {};
+      for (let i = 0; i < keyVals.length; i++) {
+        const { key, value } = keyVals[i];
+        result[key] = value;
+      }
+      set(result);
     },
     setDebugging: (value: boolean) => {
       set({
@@ -86,8 +117,8 @@ const useStoreDigram = create(
         ) + 1
       );
     },
-    debuggerNodes: [],
-    debuggerEdges: [],
+    debuggerNodes: initialNodes,
+    debuggerEdges: initialEdges,
 
     onNodesChange: (changes: NodeChange[]) => {
       // console.log("changes", changes);
@@ -124,15 +155,22 @@ const useStoreDigram = create(
   }))
 );
 
-// useStore.subscribe(
-//   (state) => [state.nodes,state.edges],
-//   (state) => {
-//     // useStore.setState((state) => ({
-//     //   debuggerNodes: state.nodes,
-//     // }));
-//   },
-//   {
-//     equalityFn: shallow,
-//   }
-// );
-export default useStoreDigram;
+useStoreDiagram.subscribe(
+  (state) => [state.nodes, state.edges],
+  (state) => {
+    console.log("state2", state);
+  },
+  {
+    equalityFn: shallow,
+  }
+);
+useStoreDiagram.subscribe(
+  (state) => [state.debuggerEdges, state.debuggerNodes],
+  (state) => {
+    console.log("state3", state);
+  },
+  {
+    equalityFn: shallow,
+  }
+);
+export default useStoreDiagram;

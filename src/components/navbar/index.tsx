@@ -1,14 +1,15 @@
 import { Button, Card, Col, Row, Switch } from "antd";
 import { shallow } from "zustand/shallow";
-import useStoreDigram, { RFState } from "../../storage/useStoreDigram";
+import useStoreDiagram, { IStoreDiagram } from "../../storage/useStoreDiagram";
 import useStoreGlobalData from "../../storage/useStoreGlobalData";
 import SaveCCode from "../saveCCode";
 import ReadMapFile from "../readMapFile";
+import Debugger from "../debugger";
 
 const Navbar = () => {
   const [debugging, setDebugging, onNodesChange, getNextNodeId] =
-    useStoreDigram(
-      (state: RFState) => [
+    useStoreDiagram(
+      (state: IStoreDiagram) => [
         state.debugging,
         state.setDebugging,
         state.onNodesChange,
@@ -146,6 +147,9 @@ const Navbar = () => {
           </Col>
           <Col>
             <ReadMapFile />
+          </Col>
+          <Col>
+            <Debugger />
           </Col>
         </Row>
       </Card>

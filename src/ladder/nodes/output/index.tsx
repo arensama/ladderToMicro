@@ -2,7 +2,7 @@ import { Col, Input, Row, Typography } from "antd";
 import React, { useState } from "react";
 import { Handle, NodeProps, Position } from "reactflow";
 import { shallow } from "zustand/shallow";
-import useStoreDigram, { NodeData } from "../../../storage/useStoreDigram";
+import useStoreDiagram, { NodeData } from "../../../storage/useStoreDiagram";
 const { Title, Text } = Typography;
 
 function OutputNode({
@@ -10,7 +10,7 @@ function OutputNode({
   data: { name, state, pin },
   isConnectable,
 }: NodeProps<NodeData>) {
-  const [nodes, updateNodeData, debugging] = useStoreDigram(
+  const [nodes, updateNodeData, debugging] = useStoreDiagram(
     (state) => [state.nodes, state.updateNodeData, state.debugging],
     shallow
   );

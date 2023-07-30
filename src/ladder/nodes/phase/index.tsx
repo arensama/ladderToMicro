@@ -1,6 +1,6 @@
 import React from "react";
 import { Handle, NodeProps, Position } from "reactflow";
-import useStoreDigram, { NodeData } from "../../../storage/useStoreDigram";
+import useStoreDiagram, { NodeData } from "../../../storage/useStoreDiagram";
 
 function PhaseNode({ id, data }: NodeProps<NodeData>) {
   return (
