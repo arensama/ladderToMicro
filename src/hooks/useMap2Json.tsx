@@ -34,51 +34,39 @@ export const useMap2Json = () => {
       input: [],
       output: [],
     };
-    let debuggingNodes: Node<NodeData>[] = [];
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
+    let debuggingNodes: Node<NodeData>[] = nodes;
+    for (let i = 0; i < debuggingNodes.length; i++) {
+      let node = debuggingNodes[i];
       if (node.type === "Input") {
         const addressInt = parseInt(address.input, 16);
-        debuggingNodes.push({
-          ...node,
-          data: {
-            ...node.data,
-            address: address.input,
-          },
-        });
+        node.data.address = address.input;
         adrs.input.push(address.input);
         const nextAddress = (addressInt + 4)
           .toString(16)
           .padStart(address.output.length - 2, "0");
-
         address.input = "0x" + nextAddress;
       } else if (node.type === "Output") {
         const addressInt = parseInt(address.output, 16);
-        debuggingNodes.push({
-          ...node,
-          data: {
-            ...node.data,
-            address: address.output,
-          },
-        });
+        node.data.address = address.output;
         adrs.output.push(address.output);
         const nextAddress = (addressInt + 4)
           .toString(16)
           .padStart(address.output.length - 2, "0");
 
         address.output = "0x" + nextAddress;
-      } else {
-        debuggingNodes.push({
-          ...node,
-        });
       }
+      debuggingNodes[i] = node;
     }
     setAddresses(adrs);
-    return {
-      debuggingNodes: nodes,
-    };
+    console.log("nodes modified", debuggingNodes);
+    setMultiState([
+      {
+        key: "nodes",
+        value: [...debuggingNodes],
+      },
+    ]);
   };
-  const updateNodeDataFromMemory = () => {
+  const fetchDataFromMemory = () => {
     // Generate GDB commands to read each address
     console.log("addresses", addresses);
     const inputCommands = addresses.input.map((addr, index) => {
@@ -99,24 +87,33 @@ export const useMap2Json = () => {
       script,
     });
   };
-  const map2json = () => {
-    setAddresses({
-      input: [],
-      output: [],
-    });
-    console.log("dbg map2json");
-    const data = createDebuggingDiagramData();
-    // console.log("dbg nodes", debuggerNodes);
+  const updateNodes = (data: { adr: string; val: string }[]) => {
+    console.log("dAta", data);
+    const newNodeData = nodes;
+    for (let i = 0; i < newNodeData.length; i++) {
+      const node = newNodeData[i];
+      if (node?.data?.address) {
+        const newData = data.find(
+          (i) =>
+            parseInt(i.adr, 16) ===
+            parseInt(node?.data?.address ?? "0x000000", 16)
+        );
+        console.log("newDAta1 ", newData);
+
+        if (newData)
+          node.data.state = newData.val[newData.val.length - 1] === "1";
+      }
+
+      newNodeData[i] = node;
+    }
+    console.log("newdata", newNodeData);
     setMultiState([
       {
-        key: "debuggerNodes",
-        value: data.debuggingNodes,
-      },
-      {
-        key: "debuggerEdges",
-        value: [],
+        key: "nodes",
+        value: [...newNodeData],
       },
     ]);
   };
-  return { map2json, updateNodeDataFromMemory };
+
+  return { createDebuggingDiagramData, fetchDataFromMemory, updateNodes };
 };

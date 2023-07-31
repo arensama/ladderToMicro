@@ -23,8 +23,6 @@ const selector = (state: IStoreDiagram) => ({
   debugging: state.debugging,
   nodes: state.nodes,
   edges: state.edges,
-  debuggerNodes: state.debuggerNodes,
-  debuggerEdges: state.debuggerEdges,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
@@ -35,9 +33,7 @@ function Flow() {
     setDebugging,
     debugging,
     nodes,
-    debuggerNodes,
     edges,
-    debuggerEdges,
     onNodesChange,
     onEdgesChange,
     onConnect,
@@ -45,8 +41,8 @@ function Flow() {
   // console.log(nodes);
   return (
     <ReactFlow
-      nodes={!debugging ? nodes : debuggerNodes}
-      edges={!debugging ? edges : debuggerEdges}
+      nodes={nodes}
+      edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}

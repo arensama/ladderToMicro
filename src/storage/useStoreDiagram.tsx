@@ -158,16 +158,16 @@ const useStoreDiagram = create(
 useStoreDiagram.subscribe(
   (state) => [state.nodes, state.edges],
   (state) => {
-    console.log("state2", state);
+    console.log("normalState", state);
   },
   {
     equalityFn: shallow,
   }
 );
 useStoreDiagram.subscribe(
-  (state) => [state.debuggerEdges, state.debuggerNodes],
+  (state) => [state.debuggerNodes, state.debuggerEdges],
   (state) => {
-    console.log("state3", state);
+    console.log("debuggerState", state);
   },
   {
     equalityFn: shallow,
