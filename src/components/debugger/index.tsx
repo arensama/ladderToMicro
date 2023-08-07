@@ -11,7 +11,7 @@ const Debugger = () => {
   //   (state) => [state.modal, state.setState],
   //   shallow
   // );
-  const [debugging] = useStoreDiagram((state) => [state.debugging], shallow);
+  const [debugging,nodes] = useStoreDiagram((state) => [state.debugging,state.nodes], shallow);
   const { createDebuggingDiagramData, fetchDataFromMemory, updateNodes } =
     useMap2Json();
   const { IO, emit } = useSocket();
@@ -25,12 +25,12 @@ const Debugger = () => {
   useEffect(() => {
     IO.on("memoryValues", function (data) {
       console.log("memoryValues : ", data);
-      updateNodes(data);
+      updateNodes(data,nodes);
     });
     return () => {
       IO.off("memoryValues");
     };
-  }, []);
+  }, [nodes]);
   useEffect(() => {
     let intervalId = setInterval(function () {
       if (fetching) fetchDataFromMemory();

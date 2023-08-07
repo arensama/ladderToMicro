@@ -1,4 +1,5 @@
 import { Edge, Node } from "reactflow";
+
 export interface IGraph extends Node {
   sources: string[];
 }
@@ -135,8 +136,12 @@ export const useJson2SemiLogic = () => {
     edges: Edge[]
   ): Promise<IJson2SemiLogicResult> => {
     mark = new Map();
+    console.log("mamad node",nodes)
     let graphBeforeExtention = matrix2graph(nodes, edges);
+    console.log("mamad graphBeforeExtention",graphBeforeExtention)
+    
     let { result: graph, newNodes } = graphExtender(graphBeforeExtention);
+    console.log("mamad graphExtender",graph , newNodes)
     let nullnode = graph.get("Null");
     if (nullnode) {
       await bfs(nullnode, graph);

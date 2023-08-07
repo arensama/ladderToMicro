@@ -35,8 +35,8 @@ export type IStoreDiagramF = {
   onConnect: OnConnect;
   onNodesChange: OnNodesChange;
   // debugger
-  debuggerNodes: Node<NodeData>[];
-  debuggerEdges: Edge[];
+  // debuggerNodes: Node<NodeData>[];
+  // debuggerEdges: Edge[];
   debugging: boolean;
 };
 
@@ -48,8 +48,8 @@ type IStoreDiagramP = {
   onConnect?: OnConnect;
   onNodesChange?: OnNodesChange;
   // debugger
-  debuggerNodes?: Node<NodeData>[];
-  debuggerEdges?: Edge[];
+  // debuggerNodes?: Node<NodeData>[];
+  // debuggerEdges?: Edge[];
   debugging?: boolean;
 };
 export interface IStoreDiagram extends IStoreDiagramF {
@@ -117,8 +117,8 @@ const useStoreDiagram = create(
         ) + 1
       );
     },
-    debuggerNodes: initialNodes,
-    debuggerEdges: initialEdges,
+    // debuggerNodes: initialNodes,
+    // debuggerEdges: initialEdges,
 
     onNodesChange: (changes: NodeChange[]) => {
       // console.log("changes", changes);
@@ -164,13 +164,13 @@ useStoreDiagram.subscribe(
     equalityFn: shallow,
   }
 );
-useStoreDiagram.subscribe(
-  (state) => [state.debuggerNodes, state.debuggerEdges],
-  (state) => {
-    console.log("debuggerState", state);
-  },
-  {
-    equalityFn: shallow,
-  }
-);
+// useStoreDiagram.subscribe(
+//   (state) => [state.debuggerNodes, state.debuggerEdges],
+//   (state) => {
+//     console.log("debuggerState", state);
+//   },
+//   {
+//     equalityFn: shallow,
+//   }
+// );
 export default useStoreDiagram;

@@ -87,8 +87,9 @@ export const useMap2Json = () => {
       script,
     });
   };
-  const updateNodes = (data: { adr: string; val: string }[]) => {
-    console.log("dAta", data);
+  const updateNodes = (data: { adr: string; val: string }[],nodes:Node[]) => {
+    console.log("sss nodes", nodes);
+    console.log("sss data", data);
     const newNodeData = nodes;
     for (let i = 0; i < newNodeData.length; i++) {
       const node = newNodeData[i];
@@ -106,7 +107,7 @@ export const useMap2Json = () => {
 
       newNodeData[i] = node;
     }
-    console.log("newdata", newNodeData);
+    console.log("sss newdata", newNodeData);
     setMultiState([
       {
         key: "nodes",
