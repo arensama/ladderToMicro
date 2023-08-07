@@ -20,6 +20,10 @@ const Debugger = () => {
     if (debugging) {
       console.log("dbg start");
       createDebuggingDiagramData();
+      emit("openStUtil");
+    }
+    return ()=>{
+      emit("closeStUtil");
     }
   }, [debugging]);
   useEffect(() => {

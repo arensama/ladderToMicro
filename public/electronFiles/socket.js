@@ -5,6 +5,8 @@ const {
   saveToLocation,
   openMapFile,
   createMemoryGDB,
+  closeStUtil,
+  openStUtil,
 } = require("./file");
 function socketServer() {
   const server = http.createServer();
@@ -29,6 +31,12 @@ function socketServer() {
     });
     socket.on("openMapFile", function (data) {
       openMapFile(socketServer, data);
+    });
+    socket.on("openStUtil", function (data) {
+      openStUtil(socketServer);
+    });
+    socket.on("closeStUtil", function (data) {
+      closeStUtil(socketServer);
     });
     socket.on("disconnect", function () {
       console.log("socket.io connection closed");
