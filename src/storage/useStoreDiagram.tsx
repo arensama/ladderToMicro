@@ -56,7 +56,11 @@ export interface IStoreDiagram extends IStoreDiagramF {
   getPins: () => any;
   setState: (key: keyof IStoreDiagramF, value: any) => void;
   updateNodeData: (nodeId: string, key: string, value: any) => void;
-  getNextNodeId: () => string;
+  getNextNodeData: (type: string) => {
+    id: string;
+    pin: string;
+    name: string;
+  };
   setDebugging: (value: boolean) => void;
   setMultiState: (
     keyVals: {
@@ -107,15 +111,49 @@ const useStoreDiagram = create(
         outputs,
       };
     },
-    getNextNodeId: () => {
+    getNextNodeData: (type: string) => {
       const nodes: Node[] = get().nodes;
-      return String(
+      const id = String(
         Math.max(
           ...nodes.map((node) =>
             Number(node.id !== "Phase" && node.id !== "Null" ? node.id : "0")
           )
         ) + 1
       );
+      const pin =
+        "GPIO_PIN_" +
+        String(
+          Math.max(
+            ...nodes.map((node) => {
+              const res = Number(
+                (node?.data?.pin ?? "GPIO_PIN_0").split("_")?.[2]
+              );
+
+              return Number.isNaN(res) ? 0 : res;
+            })
+          ) + 1
+        );
+      const name =
+        (type === "Input" ? "in" : type === "Output" ? "out" : "unknown") +
+        String(
+          Math.max(
+            ...nodes.map((node) => {
+              const res =
+                node.type === "Input"
+                  ? Number((node?.data?.name ?? "in0").split("in")?.[1])
+                  : node.type === "Output"
+                  ? Number((node?.data?.name ?? "out0").split("out")?.[1])
+                  : 0;
+              console.log("hasan ", (node?.data?.pin ?? "in0").split("in"));
+              return Number.isNaN(res) ? 0 : res;
+            })
+          ) + 1
+        );
+      return {
+        id,
+        name,
+        pin,
+      };
     },
     // debuggerNodes: initialNodes,
     // debuggerEdges: initialEdges,

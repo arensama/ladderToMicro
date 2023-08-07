@@ -7,13 +7,13 @@ import ReadMapFile from "../readMapFile";
 import Debugger from "../debugger";
 
 const Navbar = () => {
-  const [debugging, setDebugging, onNodesChange, getNextNodeId] =
+  const [debugging, setDebugging, onNodesChange, getNextNodeData] =
     useStoreDiagram(
       (state: IStoreDiagram) => [
         state.debugging,
         state.setDebugging,
         state.onNodesChange,
-        state.getNextNodeId,
+        state.getNextNodeData,
       ],
       shallow
     );
@@ -54,9 +54,9 @@ const Navbar = () => {
                       {
                         type: "add",
                         item: {
-                          id: getNextNodeId(),
+                          id: getNextNodeData("Input").id,
                           type: "Input",
-                          data: {},
+                          data: {pin: getNextNodeData("Input").pin,name: getNextNodeData("Input").name,},
                           position: { x: 0, y: -100 },
                         },
                       },
@@ -73,9 +73,9 @@ const Navbar = () => {
                       {
                         type: "add",
                         item: {
-                          id: getNextNodeId(),
+                          id: getNextNodeData("Output").id,
                           type: "Output",
-                          data: { state: false },
+                          data: { state: false ,pin: getNextNodeData("Output").pin,name: getNextNodeData("Output").name,},
                           position: { x: 0, y: -100 },
                         },
                       },
